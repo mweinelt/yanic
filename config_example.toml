@@ -71,3 +71,13 @@ password = ""
 [[database.connection.logging]]
 enable   = false
 path     = "/var/log/yanic.log"
+
+[[database.connection.socket]]
+enable   = false
+type     = "tcp"
+address  = ":8081"
+
+[[database.connection.socket]]
+enable   = false
+type     = "unix"
+address  = "/var/lib/collector/database.socket"
