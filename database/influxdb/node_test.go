@@ -16,9 +16,6 @@ func TestToInflux(t *testing.T) {
 		Statistics: &data.Statistics{
 			NodeID:      "foobar",
 			LoadAverage: 0.5,
-			Wireless: data.WirelessStatistics{
-				&data.WirelessAirtime{Frequency: 5500},
-			},
 			Traffic: struct {
 				Tx      *data.Traffic `json:"tx"`
 				Rx      *data.Traffic `json:"rx"`
@@ -77,8 +74,6 @@ func TestToInflux(t *testing.T) {
 	assert.Equal(1, fields["neighbours.total"])
 
 	assert.Equal(uint32(3), fields["wireless.txpower24"])
-	assert.Equal(uint32(5500), fields["airtime11a.frequency"])
-	assert.Equal("", tags.GetString("frequency5500"))
 
 	assert.Equal(int64(1213), fields["traffic.rx.bytes"])
 	assert.Equal(float64(1321), fields["traffic.tx.dropped"])

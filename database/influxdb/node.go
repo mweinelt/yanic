@@ -2,7 +2,6 @@ package influxdb
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	client "github.com/influxdata/influxdb/client/v2"
@@ -111,16 +110,6 @@ func buildNodeStats(node *runtime.Node) (tags models.Tags, fields models.Fields)
 	if t := stats.Traffic.MgmtTx; t != nil {
 		fields["traffic.mgmt_tx.bytes"] = int64(t.Bytes)
 		fields["traffic.mgmt_tx.packets"] = t.Packets
-	}
-
-	for _, airtime := range stats.Wireless {
-		suffix := airtime.FrequencyName()
-		fields["airtime"+suffix+".chan_util"] = airtime.ChanUtil
-		fields["airtime"+suffix+".rx_util"] = airtime.RxUtil
-		fields["airtime"+suffix+".tx_util"] = airtime.TxUtil
-		fields["airtime"+suffix+".noise"] = airtime.Noise
-		fields["airtime"+suffix+".frequency"] = airtime.Frequency
-		tags.SetString("frequency"+suffix, strconv.Itoa(int(airtime.Frequency)))
 	}
 
 	return

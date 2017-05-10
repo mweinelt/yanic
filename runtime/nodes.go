@@ -67,12 +67,6 @@ func (nodes *Nodes) Update(nodeID string, res *data.ResponseData) *Node {
 
 	// Update statistics
 	if val := res.Statistics; val != nil {
-
-		// Update channel utilization if previous statistics are present
-		if node.Statistics != nil && node.Statistics.Wireless != nil && val.Wireless != nil {
-			val.Wireless.SetUtilization(node.Statistics.Wireless)
-		}
-
 		node.Statistics = val
 	}
 
