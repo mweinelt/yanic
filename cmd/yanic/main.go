@@ -8,8 +8,9 @@ import (
 	"syscall"
 
 	"github.com/FreifunkBremen/yanic/database"
-	"github.com/FreifunkBremen/yanic/database/all"
-	"github.com/FreifunkBremen/yanic/meshviewer"
+	allDB "github.com/FreifunkBremen/yanic/database/all"
+	"github.com/FreifunkBremen/yanic/output"
+	allOutput "github.com/FreifunkBremen/yanic/output/all"
 	"github.com/FreifunkBremen/yanic/respond"
 	"github.com/FreifunkBremen/yanic/rrd"
 	"github.com/FreifunkBremen/yanic/runtime"
@@ -42,7 +43,7 @@ func main() {
 		panic(err)
 	}
 
-	connections, err = all.Connect(config.Database.Connection)
+	connections, err = allDB.Connect(config.Database.Connection)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +57,14 @@ func main() {
 
 	nodes = runtime.NewNodes(config)
 	nodes.Start()
-	meshviewer.Start(config, nodes)
+
+	outputs, err := allOutput.Register(nodes, config.Nodes.Output)
+	if err != nil {
+		panic(err)
+	}
+
+	output.Start(outputs, config)
+	defer output.Close()
 
 	if config.Respondd.Enable {
 		collector = respond.NewCollector(connections, nodes, config.Respondd.Interface, config.Respondd.Port)
